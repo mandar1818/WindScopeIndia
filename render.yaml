@@ -1,26 +1,21 @@
 services:
   - type: web
-    name: windscope-uk-backend
+    name: windscope-india-backend
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     plan: free
     healthCheckPath: /health
-    autoDeploy: true
+    autoDeploy: false
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.10
-      - key: ELEXON_BASE_URL
-        value: https://data.elexon.co.uk/bmrs/api/v1
-      - key: ELEXON_TIMEOUT_SECONDS
-        value: "30.0"
-      - key: ELEXON_MAX_RETRIES
-        value: "3"
-      - key: DEFAULT_CUTOFF
-        value: day_ahead_1100
-      - key: ALLOW_DEMO_FALLBACK
-        value: "true"
+      - key: DATABASE_URL
+        value: sqlite:///./windscope_india.db
+      - key: TIMEZONE_IST
+        value: Asia/Kolkata
+      - key: MARKET_TIMEZONE
+        value: Asia/Kolkata
       - key: CORS_ORIGINS
-        value: "https://windscope-uk.vercel.app,http://localhost:5173,http://localhost:3000,*"
-
+        value: "https://windscope-india.vercel.app,http://localhost:5173,http://localhost:3000,*"

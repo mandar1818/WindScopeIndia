@@ -11,6 +11,9 @@ ENV/
 .coverage
 htmlcov/
 .cache/
+*.db
+*.sqlite*
+*.bak*
 
 # Node & Frontend
 node_modules/
@@ -36,4 +39,10 @@ yarn-error.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Scratch & Temporary Downloads
+scratch_downloads/
+backend/data/temp_downloads/
+backend/data/validation_reports/
+
 

@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   RefreshCw,
   Clock,
+  ExternalLink,
 } from 'lucide-react';
 import { SourceStatus } from '../../types/api';
 
@@ -17,33 +18,61 @@ interface TopNavProps {
 }
 
 const TAB_TITLES: Record<string, { title: string; subtitle: string }> = {
-  overview: {
-    title: 'Overview',
-    subtitle: 'National wind generation, Day-Ahead forecasts, and portfolio balance summary',
+  'india-overview': {
+    title: 'India National Overview',
+    subtitle: 'National renewable generation, installed capacity, and technology mix',
   },
-  forecast: {
-    title: 'Forecast Analysis',
-    subtitle: 'Point-in-time forecast selection and evolution across publication horizons',
+  'india-map': {
+    title: 'Interactive India Map',
+    subtitle: 'Geographic choropleth, regional grid overlays, and state-level telemetry',
   },
-  accuracy: {
-    title: 'Accuracy Metrics',
-    subtitle: 'MAE, RMSE, WAPE, and signed forecast bias evaluated across settlement days',
+  'india-states': {
+    title: 'State & UT Explorer',
+    subtitle: 'Operational profiles across all 28 states and 8 union territories',
   },
-  exposure: {
-    title: 'Procurement Exposure',
-    subtitle: 'Half-hourly energy volume imbalance (MWh) and physical market exposure',
+  'india-regional': {
+    title: 'Regional Grid Comparison',
+    subtitle: 'NR, WR, SR, ER, and NER grid council metrics and interconnection flows',
   },
-  explorer: {
-    title: 'Data Explorer',
-    subtitle: 'Granular half-hourly observations, paired actuals/forecasts, and CSV export',
+  'india-multi-year': {
+    title: 'Multi-Year Analytics (2020–2026)',
+    subtitle: 'Historical growth trajectory, annual additions, and compound growth rates',
   },
-  'testing-lab': {
-    title: 'Testing Lab',
-    subtitle: 'Automated engineering verification suite executing against live data',
+  'india-wind': {
+    title: 'Wind Energy Sector Intelligence',
+    subtitle: 'Onshore turbine fleet, seasonal monsoon surges, and non-wind state disclosures',
   },
-  methodology: {
-    title: 'Methodology',
-    subtitle: 'Elexon BMRS datasets, decision cutoffs, error formulas, and market rules',
+  'india-solar': {
+    title: 'Solar Photovoltaic Intelligence',
+    subtitle: 'Utility-scale solar parks, spring outturn peaks, and solar radiation regimes',
+  },
+  'india-hydro': {
+    title: 'Hydroelectric Energy Intelligence',
+    subtitle: 'Large Hydro (>25MW), Small Hydro (<=25MW), and Himalayan river runoff',
+  },
+  'india-capacity': {
+    title: 'Capacity & 500 GW Target Tracker',
+    subtitle: 'Auditing progress toward India COP26 non-fossil capacity commitment',
+  },
+  'india-forecasting': {
+    title: 'Forecasting & REMC Accuracy',
+    subtitle: '96 intraday 15-minute time blocks, Day-Ahead schedules, and DSM errors',
+  },
+  'india-weather': {
+    title: 'Renewable Weather Intelligence',
+    subtitle: '100m hub-height wind velocity, Global Horizontal Irradiance, and monsoon index',
+  },
+  'india-explorer': {
+    title: 'Data Explorer & Ledger',
+    subtitle: '18,213 normalized observations, custom filtering, and CSV export',
+  },
+  'india-data-quality': {
+    title: 'Data Quality & Provenance Audit',
+    subtitle: 'Jurisdictional completeness matrix (36/36) and statutory ingestion audit trail',
+  },
+  'india-methodology': {
+    title: 'Technical Methodology & Standards',
+    subtitle: 'CEA statutory framework, CERC IEGC rules, unit standards, and error formulas',
   },
 };
 
@@ -54,40 +83,11 @@ export const TopNav: React.FC<TopNavProps> = ({
   onOpenStatusModal,
   onRefresh,
 }) => {
-  const isDemo = sourceStatus?.is_demonstration_mode;
-  const currentTabInfo = TAB_TITLES[activeTab] || TAB_TITLES.overview;
-
-  const formattedLastUpdated = sourceStatus?.last_updated_utc
-    ? new Date(sourceStatus.last_updated_utc).toLocaleTimeString('en-GB', {
-        timeZone: 'UTC',
-        hour: '2-digit',
-        minute: '2-digit',
-      }) + ' UTC'
-    : null;
+  const currentTabInfo = TAB_TITLES[activeTab] || TAB_TITLES['india-overview'];
 
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-nature-border">
-      {/* Demonstration Banner if active */}
-      {isDemo && (
-        <div className="bg-nature-risk-light border-b border-nature-risk/30 text-[#8C611C] px-4 py-1.5 text-xs flex items-center justify-between font-mono">
-          <div className="flex items-center space-x-2">
-            <AlertTriangle className="w-3.5 h-3.5 text-nature-risk flex-shrink-0" />
-            <span className="font-semibold text-nature-risk">DEMONSTRATION MODE:</span>
-            <span className="text-[#8C611C] hidden sm:inline font-sans">
-              {sourceStatus?.demonstration_notice ||
-                'Synthetic benchmark observations active. Live Elexon API is unreachable.'}
-            </span>
-          </div>
-          <button
-            onClick={onOpenStatusModal}
-            className="text-[10px] bg-white hover:bg-[#F8EFE1] px-2 py-0.5 rounded border border-nature-risk/40 text-nature-risk transition-colors"
-          >
-            Details
-          </button>
-        </div>
-      )}
-
-      {/* Main Top Nav Bar */}
+      {/* Top Header Bar */}
       <div className="h-14 px-4 sm:px-6 flex items-center justify-between gap-4">
         {/* Left: Mobile Toggle & Page Title */}
         <div className="flex items-center space-x-3 truncate">
@@ -100,72 +100,45 @@ export const TopNav: React.FC<TopNavProps> = ({
           </button>
 
           <div className="truncate">
-            <div className="flex items-center space-x-2">
-              <span className="text-xs font-mono text-nature-muted hidden sm:inline">
-                WindScope UK
-              </span>
-              <span className="text-nature-border hidden sm:inline">/</span>
-              <h1 className="text-sm font-semibold text-nature-text truncate">
-                {currentTabInfo.title}
-              </h1>
-            </div>
-            <p className="text-[11px] text-nature-muted truncate hidden md:block">
+            <h1 className="text-sm sm:text-base font-semibold text-nature-text tracking-tight truncate">
+              {currentTabInfo.title}
+            </h1>
+            <p className="hidden md:block text-[11px] text-nature-muted truncate">
               {currentTabInfo.subtitle}
             </p>
           </div>
         </div>
 
-        {/* Right: Operational Status Badges */}
-        <div className="flex items-center space-x-2 font-mono text-xs flex-shrink-0">
-          {/* GB Market Scope Indicator */}
-          <div className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-nature-bg border border-nature-border text-nature-muted text-[11px]">
-            <span>Market:</span>
-            <span className="text-nature-text font-sans font-medium">GB (GMT)</span>
-          </div>
-
-          {/* Scope Badge */}
-          <div className="hidden sm:inline-flex items-center px-2.5 py-1 rounded-md bg-nature-bg border border-nature-border text-nature-muted text-[11px]">
-            <span>Jan 2026 Scope</span>
-          </div>
-
-          {/* Elexon Data Source Status */}
-          <button
-            onClick={onOpenStatusModal}
-            className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md border text-[11px] transition-colors ${
-              isDemo
-                ? 'bg-nature-risk-light border-nature-risk/30 text-nature-risk hover:bg-[#F9EDE0]'
-                : 'bg-nature-forest-light border-nature-border text-nature-forest hover:bg-nature-forest-light/80'
-            }`}
-            title="View Data Pipeline Telemetry"
-          >
-            <span
-              className={`w-1.5 h-1.5 rounded-full ${
-                isDemo ? 'bg-nature-risk' : 'bg-nature-actual'
-              }`}
-            />
-            <span className="font-sans font-medium">
-              {isDemo ? 'Demo Mode' : 'Elexon Live'}
+        {/* Right: Statutory Source & Live Status Indicator */}
+        <div className="flex items-center space-x-2.5 flex-shrink-0">
+          {/* Provenance Badge */}
+          <div className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-nature-bg border border-nature-border text-xs text-nature-text">
+            <span className="w-1.5 h-1.5 rounded-full bg-nature-actual" />
+            <span className="font-mono text-[11px] text-nature-forest font-medium">
+              CEA & Grid-India &bull; Verified + Reanalysis
             </span>
-          </button>
-
-          {/* Last Updated Timestamp */}
-          {formattedLastUpdated && (
-            <div className="hidden xl:flex items-center space-x-1 text-[11px] text-nature-muted px-2 py-1 rounded-md bg-nature-bg border border-nature-border">
-              <Clock className="w-3 h-3 text-nature-muted" />
-              <span>{formattedLastUpdated}</span>
-            </div>
-          )}
+          </div>
 
           {/* Refresh Action */}
           {onRefresh && (
             <button
               onClick={onRefresh}
-              className="p-1.5 rounded-md bg-white hover:bg-nature-bg text-nature-muted hover:text-nature-text border border-nature-border transition-colors shadow-sm"
+              className="p-1.5 rounded-md text-nature-muted hover:text-nature-text hover:bg-nature-bg border border-transparent hover:border-nature-border transition-colors"
               title="Refresh Data"
             >
               <RefreshCw className="w-3.5 h-3.5" />
             </button>
           )}
+
+          {/* Source Status Inspector Button */}
+          <button
+            onClick={onOpenStatusModal}
+            className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-nature-forest-light text-nature-forest border border-nature-forest/20 text-xs font-medium hover:bg-nature-forest/15 transition-colors shadow-2xs"
+            title="Inspect Platform Status & Provenance"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-nature-forest" />
+            <span className="hidden sm:inline">Data Status</span>
+          </button>
         </div>
       </div>
     </header>

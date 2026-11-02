@@ -1,34 +1,29 @@
-from enum import Enum
-from typing import List, Union
+from typing import List, Union, Optional
 from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
-class CutoffType(str, Enum):
-    DAY_AHEAD_1100 = "day_ahead_1100"   # Day D-1 at 11:00 London time (Day-Ahead Power Exchange auction deadline)
-    DAY_AHEAD_1200 = "day_ahead_1200"   # Day D-1 at 12:00 London time (Noon cutoff)
-    DAY_AHEAD_1700 = "day_ahead_1700"   # Day D-1 at 17:00 London time (Physical Notification / evening freeze)
-    GATE_CLOSURE_1H = "gate_closure_1h"  # Intraday Gate Closure: 1 hour before delivery start
-    GATE_CLOSURE_2H = "gate_closure_2h"  # Intraday 2 hours before delivery start
-
-
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "WindScope UK"
+    PROJECT_NAME: str = "WindScope India — Renewable Energy Intelligence Platform"
     API_V1_PREFIX: str = "/api/v1"
     DEBUG: bool = False
 
-    # Elexon BMRS Insights Solution API Configuration
-    ELEXON_BASE_URL: str = "https://data.elexon.co.uk/bmrs/api/v1"
-    ELEXON_TIMEOUT_SECONDS: float = 30.0
-    ELEXON_MAX_RETRIES: int = 3
-    ELEXON_RETRY_BACKOFF_FACTOR: float = 0.5
+    # Database Configuration (PostgreSQL in production, SQLite fallback for local development)
+    DATABASE_URL: str = "sqlite:///./windscope_india.db"
+    DATABASE_POOL_SIZE: int = 10
+    DATABASE_MAX_OVERFLOW: int = 20
+    DATABASE_POOL_TIMEOUT: int = 30
+    DATABASE_POOL_RECYCLE: int = 1800
+    DATABASE_SSL_MODE: str = "prefer"
+    APP_ENV: str = "development"
+    INGESTION_ADMIN_KEY: str = "dev-ingestion-admin-key"
+    TIMEZONE_IST: str = "Asia/Kolkata"
+    MARKET_TIMEZONE: str = "Asia/Kolkata"
 
     # Evaluation scope constraints
     TARGET_YEAR: int = 2026
     TARGET_MONTH: int = 1
-    DEFAULT_DATE: str = "2026-01-15"
-    DEFAULT_CUTOFF: CutoffType = CutoffType.DAY_AHEAD_1100
-    MARKET_TIMEZONE: str = "Europe/London"
+    DEFAULT_DATE: str = "2024-06-01"
 
     # Local Cache Configuration (in-memory & disk cache)
     CACHE_DIR: str = ".cache"

@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
 from fastapi import APIRouter
-from app.services.elexon_client import elexon_client
 
 router = APIRouter(tags=["Health"])
 
@@ -8,14 +7,14 @@ router = APIRouter(tags=["Health"])
 @router.get("/health")
 async def get_health():
     """
-    Health check endpoint verifying backend service operation and live Elexon API reachability.
+    Health check endpoint verifying backend service operation and India Renewable Intelligence status.
     """
-    elexon_live = await elexon_client.check_api_health()
     return {
         "status": "healthy",
-        "service": "WindScope UK Backend API",
+        "service": "WindScope India — Renewable Energy Intelligence Platform",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
-        "elexon_api_connected": elexon_live,
-        "evaluation_scope": "January 2026 Delivery Periods"
+        "platform_jurisdiction": "India (28 States & 8 Union Territories)",
+        "market_timezone": "Asia/Kolkata (IST)"
     }
+
 

@@ -1,3 +1,3 @@
-"""WindScope UK - Wind Power Forecasting & Day-Ahead Procurement Analytics."""
+"""WindScope India — Renewable Energy Intelligence Platform."""
 __version__ = "1.0.0"
 

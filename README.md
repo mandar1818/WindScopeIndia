@@ -1,395 +1,198 @@
-# WindScope UK — Wind Power Forecasting & Day-Ahead Procurement Analytics Platform
+# WindScope India — Renewable Energy Intelligence Platform
 
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688.svg)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-18.3-61dafb.svg)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178c6.svg)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8.svg)](https://tailwindcss.com/)
-[![License](https://img.shields.io/badge/License-Proprietary-slate.svg)](#)
-[![Live Application](https://img.shields.io/badge/Live_App-Vercel-success.svg)](https://windscope-uk.vercel.app/)
-[![Backend API](https://img.shields.io/badge/Backend_API-Render-informational.svg)](https://windscope-uk-backend.onrender.com)
+[![Alembic](https://img.shields.io/badge/Alembic-1.13-red.svg)](https://alembic.sqlalchemy.org/)
+[![Jurisdiction](https://img.shields.io/badge/Jurisdiction-India_(28_States_&_8_UTs)-forest.svg)](#)
+[![Timezone](https://img.shields.io/badge/Grid_Timezone-Asia/Kolkata_(IST)-orange.svg)](#)
 
-**WindScope UK** is an enterprise-grade energy trading analytics platform engineered for UK electricity utility commercial optimization and day-ahead power procurement desks. The system evaluates Great Britain national wind generation forecasts against outturn generation, enforces point-in-time forecast selection across statutory market deadlines to eliminate look-ahead bias, computes rigorous quantitative accuracy metrics (MAE, RMSE, WAPE, and signed Bias), models physical balancing exposure (MWh), and provides an interactive reviewer test harness.
-
-- **Live Application:** [https://windscope-uk.vercel.app/](https://windscope-uk.vercel.app/)
-- **Backend API Gateway:** [https://windscope-uk-backend.onrender.com](https://windscope-uk-backend.onrender.com)
-- **GitHub Repository:** [https://github.com/mandar1818/WindScope_UK](https://github.com/mandar1818/WindScope_UK)
+**WindScope India** is an enterprise-grade renewable energy intelligence, analytics, and operational forecasting platform engineered for the Indian electricity sector. The platform synthesizes statutory generation records from the Central Electricity Authority (CEA), real-time operational telemetry and demand data from Grid Controller of India Limited (Grid-India NLDC), capacity inventories from the National Power Portal (NPP), and atmospheric reanalysis models (Open-Meteo & ERA5).
 
 ---
 
-## 1. Project Introduction
-
-Under the British Electricity Trading and Transmission Arrangements (BETTA) and the Balancing and Settlement Code (BSC), wind energy represents a dominant yet intermittent generation source. Day-ahead electricity traders, portfolio managers, and commercial hedging desks must contract physical power to match expected customer demand before power exchange order books close.
-
-WindScope UK provides a real-time, audit-ready trading terminal that ingests official half-hourly metered wind generation (`FUELHH`) and forecast submissions (`WINDFOR`) directly from Elexon BMRS, reconstructing the exact point-in-time information state available to traders at critical decision deadlines.
-
----
-
-## 2. Problem Statement
-
-Commercial power traders cannot use forecasts published *after* market deadlines without introducing **look-ahead bias**, which artificially inflates perceived forecast accuracy and obscures true procurement risks.
-
-Furthermore, naive metrics like MAPE fail during calm, low-wind periods due to zero-division anomalies. Desks require mathematically robust metrics (WAPE, RMSE, MAE, signed Bias) and need power errors (MW) translated into physical balancing energy variance (MWh) to assess exposure to Balancing Mechanism cash-out penalties.
-
----
-
-## 3. Business Use Case
-
-UK utilities balance portfolios across bilateral contracts, Day-Ahead Power Exchange auctions (EPEX SPOT and Nord Pool UK), and within-day intraday continuous markets.
-
-### The Balancing Dilemma:
-1. **Overforecasting Error (Forecast > Actual Generation):**
-   - *Trading Consequence:* The trading desk expects high wind output and therefore under-procures thermal/interconnector generation or sells surplus energy forward.
-   - *Physical Delivery:* Less wind materializes, leaving the utility's portfolio physically **SHORT**.
-   - *Financial Settlement:* The shortfall must be cashed out in the Balancing Mechanism at the **System Buy Price (SBP)**, which escalates during tight system conditions.
-2. **Underforecasting Error (Forecast < Actual Generation):**
-   - *Trading Consequence:* The desk expects low wind output and over-procures thermal generation.
-   - *Physical Delivery:* More wind is generated than forecasted, leaving the utility physically **LONG**.
-   - *Financial Settlement:* The surplus spill power is liquidated at the **System Sell Price (SSP)**, which frequently collapses near zero or turns negative during windy, low-demand periods.
-
----
-
-## 4. UI Architecture & Screenshots
-
-The platform features a Bloomberg-style dark financial terminal interface with subtle blue/teal accents:
+## 1. Platform Architecture & Scope
 
 ```
 +---------------------------------------------------------------------------------------------------+
-|  WINDSCOPE UK - FINANCIAL TRADING TERMINAL INTERFACE                                              |
+|                  WINDSCOPE INDIA — RENEWABLE ENERGY INTELLIGENCE PLATFORM                         |
 +---------------------------------------------------------------------------------------------------+
-| [Sidebar]                       | [TopNav Operational Header]                                     |
-| - Logo & Branding               | - Active View Title & Breadcrumbs                               |
-| - Overview Dashboard            | - GB Grid Status: Europe/London (GMT) Live Pulse                |
-| - Forecast Analysis             | - January 2026 Scope Tag                                        |
-| - Accuracy Analysis             | - Elexon BMRS Live / Demo Status Pill                           |
-| - Procurement Exposure          | - Last Checked UTC Timestamp & Quick Refresh                    |
-| - Data Explorer                 +-----------------------------------------------------------------+
-| - Interactive Testing Lab [NEW] | [Active View Container]                                         |
-| - Methodology & Reference       | - Reviewer Quick Actions (Start Testing / Start Exploring)      |
-| - System Telemetry Modal        | - Executive Control Ribbon (Date & Decision Cutoff Selectors)   |
-| - Collapse/Expand Toggle        | - 5 Primary KPI Cards (MAE, RMSE, WAPE, Bias, Valid Obs)         |
-|                                 | - Composed Time-Series Profile (FUELHH Actuals vs WINDFOR)      |
-|                                 | - Interval Error Bars (Short Risk vs Long Risk)                 |
-|                                 | - Procurement Exposure MWh & Cumulative Trajectory              |
-+---------------------------------+-----------------------------------------------------------------+
+|  Statutory Ingestion Pipeline  |  PostgreSQL / SQLite Storage Engine  |  Analytics & Forecasting  |
+|  - CEA Monthly OPM Reports     |  - 28 States & 8 Union Territories   |  - Capacity Utilization   |
+|  - Grid-India NLDC Daily PSP   |  - 5 Regional Grid Councils          |  - 4 RE Accounting Metrics|
+|  - NPP Installed Capacity      |  - 18,213 Normalized Observations    |  - 96-Block REMC Forecasts|
+|  - ERA5 / Open-Meteo Reanalysis|  - Statutory Audit Logs & Reconcile  |  - CERC Market Timelines  |
++---------------------------------------------------------------------------------------------------+
+|                                  REST API GATEWAY (FastAPI)                                       |
+|  /api/v1/india/overview  /api/v1/india/map-data  /api/v1/india/states  /api/v1/india/forecasting  |
+|  /api/v1/india/weather   /api/v1/india/capacity  /api/v1/india/grid    /api/v1/india/data-quality |
++---------------------------------------------------------------------------------------------------+
+|                           REACT 18 + TYPESCRIPT RESPONSIVE FRONTEND                               |
+|  14 Dynamic Modules • Natural Green Theme (#245B45 / #8FAE91 / #F5F7F2) • Zero Lookahead Leakage  |
++---------------------------------------------------------------------------------------------------+
 ```
 
----
+### Complete Geographic Coverage
+- **28 States:** Andhra Pradesh, Arunachal Pradesh, Assam, Bihar, Chhattisgarh, Goa, Gujarat, Haryana, Himachal Pradesh, Jharkhand, Karnataka, Kerala, Madhya Pradesh, Maharashtra, Manipur, Meghalaya, Mizoram, Nagaland, Odisha, Punjab, Rajasthan, Sikkim, Tamil Nadu, Telangana, Tripura, Uttar Pradesh, Uttarakhand, West Bengal.
+- **8 Union Territories:** Andaman and Nicobar Islands, Chandigarh, Dadra and Nagar Haveli and Daman and Diu, Delhi (NCT), Jammu and Kashmir, Ladakh, Lakshadweep, Puducherry.
+- **5 Electrical Grid Councils:** Northern Region (NR), Western Region (WR), Southern Region (SR), Eastern Region (ER), North Eastern Region (NER).
 
-## 5. Key Features
-
-- **Executive Overview Dashboard:** High-density command center displaying 5 primary KPI cards (MAE, RMSE, WAPE, Forecast Bias, and Valid Observations) with tabular typography, status pills, and directional indicators.
-- **Point-in-Time Cutoff Engine:** Automatically enforces market deadlines, discarding future-published forecasts to guarantee 0% look-ahead contamination.
-- **Forecast Evolution Waterfall:** 48-period interactive scrubber that plots historical weather forecast submissions converging toward gate closure against final outturn.
-- **Dedicated Procurement Exposure Analytics:** Converts MW deviations into half-hourly MWh energy variance ($MW \times 0.5\,\text{h}$) and visualizes cumulative daily imbalance buildup.
-- **Searchable Data Explorer:** Granular table with period search, status filtering (`VALID`, `MISSING_FORECAST`), multi-column sorting, pagination, and one-click CSV export.
-- **Interactive Reviewer Testing Lab:** Built-in automated test harness enabling reviewers to independently execute 6 live validation suites against real backend data.
-- **Data Integrity & Zero Mock Substitution:** Directly connected to live Elexon BMRS streaming APIs with transparent demonstration mode disclosures if external endpoints disconnect.
-
----
-
-## 6. Technology Stack
-
-### Backend:
-- **Python 3.12.10:** High-performance runtime.
-- **FastAPI 0.110.1:** Asynchronous ASGI framework with OpenAPI/Swagger documentation.
-- **Uvicorn 0.29.0:** Production ASGI server.
-- **Pandas 2.2.2 & NumPy 1.26.4:** Vectorized matrix transformations and metric calculations.
-- **HTTPX 0.27.0:** Asynchronous HTTP client with connection pooling and retry backoff.
-- **Pydantic 2.7.0 & Pydantic-Settings 2.2.1:** Strict data validation and environment configuration.
-- **Pytest 8.1.1 & Pytest-Asyncio 0.23.6:** Automated test runner.
-
-### Frontend:
-- **React 18.3.1 & TypeScript 5.4.5:** Robust component architecture with strict typing.
-- **Vite 5.3.1:** Fast development server and Rollup production builder.
-- **Tailwind CSS 3.4.4:** Dark financial terminal theme with custom micro-borders and shadows.
-- **Recharts 2.12.7:** High-performance charting (ComposedChart, AreaChart, BarChart, LineChart).
-- **Lucide React 0.395.0:** Clean domain icons.
-- **Vitest 1.6.1 & Testing Library:** Automated frontend unit and component testing.
+### Energy Technologies Analyzed
+- **Wind Energy:** Onshore fleet, hub-height 100m wind velocity correlation, monsoon generation surges.
+- **Solar Photovoltaic:** Ground-mount utility solar parks, Rooftop Solar, Global Horizontal Irradiance (GHI).
+- **Large Hydroelectric:** Conventional reservoirs and run-of-the-river (>25 MW).
+- **Small Hydroelectric:** Sub-25 MW projects under MNRE mandate.
+- **Biomass, Bagasse & Waste-to-Energy:** Agro-residue cogeneration and municipal solid waste.
 
 ---
 
-## 7. Architecture & System Flow
+## 2. Interactive Application Modules
 
-```
-                                  +-----------------------------------------+
-                                  |         Elexon BMRS Insights API        |
-                                  |  - FUELHH (Half-hourly Outturn)         |
-                                  |  - WINDFOR (Wind Generation Forecast)   |
-                                  +--------------------+--------------------+
-                                                       |
-                                                       | HTTP / JSON Streams
-                                                       v
-+-----------------------------+           +------------+--------------------+
-|       React Frontend        |           |       FastAPI Backend           |
-| (Vite + TypeScript + TW)    |  REST     | (Python 3.12 + Pandas + HTTPX)  |
-| - Overview Dashboard        | <=======> | - ElexonClient (Retries, Cache) |
-| - Forecast Waterfall        |  /api/v1  | - ForecastSelector (Cutoffs)    |
-| - Accuracy Analysis         |           | - MetricsCalculator (WAPE/MAE)  |
-| - Procurement Exposure      |           | - Local Response Disk Cache     |
-| - Testing Lab (QA Suite)    |           | - Pydantic Request/Response DTO |
-| - Data Explorer & CSV       |           +---------------------------------+
-+-----------------------------+
-```
+The application frontend delivers 14 dedicated, high-performance analytical views:
+
+1. **National Overview (`/india-overview`):** High-level aggregate metrics, national generation outturn, capacity trajectory, and monthly fuel contributions.
+2. **Interactive India Map (`/india-map`):** Interactive choropleth map supporting technology filtering, regional grid council overlays, and state-level detail drawers.
+3. **State & UT Explorer (`/india-states`):** Granular profiles for all 36 administrative entities, multi-year generation curves, monthly seasonality profiles, and technology mix.
+4. **Regional Grid Comparison (`/india-regional`):** Inter-regional comparison across NR, WR, SR, ER, and NER grids, evaluating regional renewable penetration and demand.
+5. **Multi-Year Analytics (`/india-multi-year`):** 2020–2026 trajectory tracking, annual growth rates (YoY), and compound expansion across solar and wind sectors.
+6. **Wind Energy Sector (`/india-wind`):** Deep dive into Indian wind power, seasonal monsoon generation profiles (May–September), and non-wind state disclosures.
+7. **Solar Photovoltaic Sector (`/india-solar`):** Deep dive into solar parks (Bhadla, Pavagada, Kurnool), springtime outturn peaks (March–May), and daytime insolation patterns.
+8. **Hydroelectric Energy (`/india-hydro`):** Large Hydro and Small Hydro operational characteristics, Himalayan snowmelt and monsoon inflows, and firm capacity contributions.
+9. **Capacity & 500 GW Target Tracker (`/india-capacity`):** Monitoring progress toward India's COP26 non-fossil installed capacity goal of 500 GW by 2030, required addition run-rates, and technology trajectories.
+10. **Forecasting & REMC Accuracy (`/india-forecasting`):** 96 intraday 15-minute dispatch blocks, Renewable Energy Management Centre (REMC) Day-Ahead schedules, outturn comparisons, and Deviation Settlement Mechanism (DSM) error bands.
+11. **Atmospheric Weather Intelligence (`/india-weather`):** Hub-height 100m wind speeds, solar irradiance, surface temperatures, and empirical weather-to-generation correlation matrices.
+12. **Data Explorer & Ledger (`/india-explorer`):** Searchable, paginated tabular explorer across 18,213 normalized observations with provenance indicators and standards-compliant CSV export.
+13. **Data Quality & Provenance Matrix (`/india-data-quality`):** 36/36 jurisdictional completeness matrix, official source file records, national sum reconciliation audits, and data classification tagging.
+14. **Technical Methodology (`/india-methodology`):** Regulatory documentation, Section 73(i) statutory authority, CERC IEGC rules, mathematical error formulations, and unit standardization (MW, MU, MWh).
 
 ---
 
-## 8. Elexon Data Sources & Retrieval Methodology
+## 3. Statutory Market Rules & Gate Closures
 
-The pilot integrates directly with the official Elexon BMRS Insights Solution streaming endpoints:
+WindScope India enforces exact statutory market timing rules defined by the Central Electricity Regulatory Commission (CERC) under the Indian Electricity Grid Code (IEGC) 2023 and Power Market Regulations (PMR) 2021:
 
-### 1. Actual Metered Generation (`FUELHH`)
-- **API Endpoint:** `https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH/stream`
-- **Query Parameters:** `settlementDateFrom={date}&settlementDateTo={date}&fuelType=WIND`
-- **Delivery Period:** Identified by `startTime` (UTC ISO 8601).
-- **Outturn Generation:** Ingested from `generation` (MW).
-- **Resolution:** 30 minutes (Settlement Periods 1 to 48).
+| Market Product | Authority & Regulation | Bidding Gate Closure (IST) | Delivery Horizon | Verification Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **Day-Ahead Market (DAM)** | CERC PMR 2021 Reg 6 / Power Exchanges | **12:00 PM (Noon) on D-1** | Day D (00:00 - 24:00 IST) | COMPLETED |
+| **Green Day-Ahead Market (GDAM)** | CERC PMR 2021 / CERC Order 447/MP/2019 | **12:00 PM (Noon) on D-1** | Day D (00:00 - 24:00 IST) | COMPLETED |
+| **Real-Time Market (RTM)** | CERC IEGC 2023 Reg 45(4) / RTM Regs | **T - 75 minutes** | Specified 15-min block | COMPLETED |
+| **Term-Ahead Intraday (TAM)** | Power Exchange Business Rules (IEX/PXIL/HPX) | **T - 3 hours** | Specified intraday block | COMPLETED |
 
-### 2. Wind Generation Forecast (`WINDFOR`)
-- **API Endpoint:** `https://data.elexon.co.uk/bmrs/api/v1/datasets/WINDFOR/stream`
-- **Query Parameters:** `publishDateTimeFrom={UTC}&publishDateTimeTo={UTC}`
-- **Delivery Period:** Identified by `startTime` (UTC ISO 8601).
-- **Publication Timestamp:** Ingested from `publishTime` (UTC ISO 8601).
-- **Forecast Generation:** Ingested from `generation` (MW).
-
-### Evaluation Window:
-- In strict adherence to assignment requirements, the platform evaluates delivery periods in **January 2026 (2026-01-01 to 2026-01-31)**.
-- Queries for dates outside this window are systematically rejected with clear HTTP 400 responses.
+Anti-leakage eligibility validation ensures that forecasts published after gate closure are strictly disqualified from day-ahead evaluations, preventing look-ahead contamination.
 
 ---
 
-## 9. Forecast Selection Methodology & Decision Cutoffs
+## 4. Statutory Renewable Accounting Measures
 
-To eliminate look-ahead bias and replicate what traders knew at order placement:
+The platform provides explicit computation of all four distinct renewable energy measures used across Indian regulatory proceedings:
 
-### Point-in-Time Selection Algorithm (per 30-min period $T$):
-1. **Identify Target Horizon:** Determine delivery period $T$ (`startTime`).
-2. **Compute Decision Cutoff:** Calculate exact market deadline threshold $\text{Cutoff}(T)$ in UTC.
-3. **Exclude Ineligible Submissions:** Discard any forecast where $\text{publishTime} > \text{Cutoff}(T)$.
-4. **Select Latest Eligible:** From eligible records ($\text{publishTime} \le \text{Cutoff}(T)$), select the record with the maximum `publishTime`.
-5. **Pair with Outturn:** Compare selected forecast against corresponding `FUELHH` generation.
-
-### Configurable Market Cutoffs:
-- **`day_ahead_1100` (Default / Primary Benchmark):** 11:00 London local time on Day D-1. Deadline for primary GB Day-Ahead Power Auction on EPEX SPOT and Nord Pool.
-- **`day_ahead_1200`:** 12:00 London local time on Day D-1 (Midday European coupled market).
-- **`day_ahead_1700`:** 17:00 London local time on Day D-1 (Initial Physical Notification deadline to NESO).
-- **`gate_closure_1h`:** Exactly 1 hour prior to settlement period start ($\text{startTime} - 60\,\text{min}$). Statutory BSC Gate Closure.
-- **`gate_closure_2h`:** 2 hours prior to settlement period start ($\text{startTime} - 120\,\text{min}$).
+- **Measure A — Variable Renewable Energy (VRE) Penetration (%):**
+  $$\text{VRE \%} = \frac{\text{Wind Generation (MU)} + \text{Solar Generation (MU)}}{\text{Total Energy Met (MU)}} \times 100$$
+- **Measure B — RE Excluding Large Hydro (%):**
+  $$\text{RE (Excl. LH) \%} = \frac{\text{Wind} + \text{Solar} + \text{Small Hydro} + \text{Biomass}}{\text{Total Energy Met (MU)}} \times 100$$
+- **Measure C — Total Renewable Energy Including Large Hydro (%):**
+  $$\text{Total RE \%} = \frac{\text{Total Renewable Generation including Large Hydro (MU)}}{\text{Total Energy Met (MU)}} \times 100$$
+- **Measure D — Non-Fossil Share of Gross Generation (%):**
+  $$\text{Non-Fossil Share \%} = \frac{\text{Hydro} + \text{Nuclear} + \text{Wind} + \text{Solar} + \text{Other RE (MU)}}{\text{Gross National Generation (MU)}} \times 100$$
 
 ---
 
-## 10. Quantitative Metric Formulas
+## 5. Technology Stack
 
-All metrics are evaluated strictly on complete matched forecast-actual pairs:
-
-### 1. Forecast Error for interval $i$:
-$$\text{Error}_i = \text{Forecast}_i - \text{Actual}_i \quad (\text{MW})$$
-
-### 2. Mean Absolute Error (MAE):
-$$\text{MAE} = \frac{1}{N} \sum_{i=1}^N |\text{Forecast}_i - \text{Actual}_i| \quad (\text{MW})$$
-
-### 3. Root Mean Squared Error (RMSE):
-$$\text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^N (\text{Forecast}_i - \text{Actual}_i)^2} \quad (\text{MW})$$
-
-### 4. Weighted Absolute Percentage Error (WAPE):
-$$\text{WAPE} = \frac{\sum_{i=1}^N |\text{Forecast}_i - \text{Actual}_i|}{\sum_{i=1}^N |\text{Actual}_i|} \times 100 \quad (\%)$$
-*Zero-Denominator Guard:* If total actual generation is zero, WAPE returns 0.0% (if error is 0) or `None` (if error > 0). The system never returns `NaN` or `Infinity`.
-
-### 5. Forecast Bias & Sign Convention:
-$$\text{Bias} = \frac{1}{N} \sum_{i=1}^N (\text{Forecast}_i - \text{Actual}_i) \quad (\text{MW})$$
-- **Positive Bias (+MW):** **Overforecasting.** Expected wind exceeds outturn. Utility faces physical SHORT position.
-- **Negative Bias (-MW):** **Underforecasting.** Actual wind exceeds forecast. Utility faces physical LONG position.
+- **Backend:** Python 3.12, FastAPI, SQLAlchemy 2.0, Pydantic v2, Alembic, NumPy, Pandas, Requests.
+- **Frontend:** React 18, TypeScript 5.4, Vite 5.3, Tailwind CSS 3.4, Lucide React Icons, Recharts 2.12.
+- **Database:** SQLite (development / standalone), PostgreSQL (production target via psycopg2-binary).
+- **Timezone Architecture:** `Asia/Kolkata` (Indian Standard Time, UTC+05:30) uniformly enforced.
+- **Design System:** Restrained nature palette — Deep Forest Green (`#245B45`), Sage Accent (`#8FAE91`), Pale Natural Background (`#F5F7F2`), Slate Text (`#26332C`).
 
 ---
 
-## 11. Procurement Exposure Methodology
+## 6. Local Setup & Execution Guide
 
-For half-hourly settlement periods ($0.5\,\text{hours}$):
-
-$$\text{Interval Energy Error (MWh)} = \text{Power Error (MW)} \times 0.5\,\text{h}$$
-
-- **Total Overforecast Energy (MWh):** Sum of energy deficits across periods where $\text{Forecast} > \text{Actual}$. Represents physical power shortfall settled at the System Buy Price (SBP).
-- **Total Underforecast Energy (MWh):** Sum of energy surpluses across periods where $\text{Forecast} < \text{Actual}$. Represents spill power liquidated at the System Sell Price (SSP).
-- **Net Energy Variance (MWh):** Total net physical imbalance volume across the delivery day.
-
----
-
-## 12. API Reference
-
-| Method | Endpoint | Description | Query Parameters |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/health` | Health check & live Elexon connectivity probe | None |
-| `GET` | `/api/v1/overview` | Full overview metrics, generation series, and exposure | `settlement_date`, `cutoff`, `demo` |
-| `GET` | `/api/v1/generation` | 48 half-hour matched observations and errors | `settlement_date`, `cutoff`, `demo` |
-| `GET` | `/api/v1/accuracy` | Multi-day aggregate accuracy & daily breakdown | `start_date`, `end_date`, `cutoff`, `demo` |
-| `GET` | `/api/v1/forecast-history`| Multi-horizon forecast revisions (waterfall) | `delivery_time`, `cutoff`, `demo` |
-| `GET` | `/api/v1/data-status` | Elexon stream status, cache stats, cutoff list | None |
-
-Interactive OpenAPI/Swagger documentation is available at: `/docs`
-
----
-
-## 13. Local Installation Instructions
-
-### Prerequisites:
+### Prerequisites
 - Python 3.12+
-- Node.js 20+ and npm 10+
+- Node.js 18+ and npm
 - Git
 
-### 1. Clone the repository:
+### 1. Backend Setup
 ```bash
-git clone https://github.com/mandar1818/WindScope_UK.git
-cd WindScope_UK
-```
+cd D:\WindScopeIndia\backend
 
-### 2. Backend Setup:
-```bash
-cd backend
+# Create and activate virtual environment
 python -m venv .venv
+.venv\Scripts\activate   # On Windows (PowerShell: .venv\Scripts\Activate.ps1)
 
-# Activate virtual environment:
-# Linux/macOS:
-source .venv/bin/activate
-# Windows PowerShell:
-.\.venv\Scripts\Activate.ps1
-
+# Install Python dependencies
 pip install -r requirements.txt
+
+# Run database migrations (SQLite or PostgreSQL)
+alembic upgrade head
+
+# Launch the FastAPI backend server
 uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
-API runs at: `http://localhost:8000` (Docs: `http://localhost:8000/docs`)
+The backend API documentation is interactively accessible at:
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+- Health Endpoint: `http://localhost:8000/health`
 
-### 3. Frontend Setup:
-Open a separate terminal:
+### 2. Frontend Setup
 ```bash
-cd frontend
+cd D:\WindScopeIndia\frontend
+
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
 ```
-Application runs at: `http://localhost:5173`
+The application will be available at `http://localhost:5173`.
 
 ---
 
-## 14. Windows PowerShell Instructions
+## 7. Verification & Test Suite
 
-Run the following commands directly from the repository root:
+### Backend Regression Tests
+Run the comprehensive 67-case backend test suite:
+```bash
+cd D:\WindScopeIndia\backend
+.venv\Scripts\python.exe -m pytest tests -v
+```
+Expected result: **66 passed, 1 skipped** (PostgreSQL live container test skipped when local PG daemon is offline).
 
-```powershell
-# Set Python path and run backend test suite
-$env:PYTHONPATH='backend'
-& backend\.venv\Scripts\pytest.exe backend\tests -v
+### Frontend Component & Navigation Tests
+Run the Vitest test suite:
+```bash
+cd D:\WindScopeIndia\frontend
+npm test
+```
+Expected result: **4 test files passed, 7 tests passed**.
 
-# Run frontend test suite
-cd frontend
-npm run test
-
-# Run frontend production build
+### Production Frontend Build
+Verify TypeScript compilation and chunk bundling:
+```bash
+cd D:\WindScopeIndia\frontend
 npm run build
 ```
+Expected result: **0 errors, clean output in `frontend/dist/`**.
 
 ---
 
-## 15. Docker Instructions
+## 8. Data Integrity & Provenance Principles
 
-The repository includes multi-stage container definitions and a Compose orchestrator:
-
-```bash
-# Build and run containers in detached mode
-docker-compose up -d --build
-
-# View container logs
-docker-compose logs -f
-
-# Stop containers
-docker-compose down
-```
-- Frontend UI: `http://localhost:3000`
-- Backend API: `http://localhost:8000`
+1. **Strict Source Attribution:** Every record preserves its originating authority (CEA, Grid-India, NPP, Open-Meteo), statutory legal reference, and ingestion timestamp.
+2. **Separation of Verified and Demonstration Data:** Official government observations are classified as `VERIFIED_OFFICIAL`; synthetic or simulated data points are explicitly flagged as `DEMONSTRATION` and never mixed silently in statutory analytics.
+3. **Accurate Semantics for Non-Reporting:** Zero generation is distinguished from missing observations (`MISSING_OBSERVATION`). Non-wind states are reported as non-generating rather than omitted.
+4. **Physical Sanity Bounds:** Capacity Utilization Factor (CUF %) formulas account for exact leap-year month lengths and flag implausible values (>100%) as data-quality warnings rather than silently clamping.
 
 ---
 
-## 16. Automated Testing Instructions
+## 9. License & Statutory Citations
 
-### Run Backend Tests (Pytest):
-```bash
-cd backend
-pytest tests -v
-```
-All 26 automated backend tests verify cutoff calculations, latest-eligible selection, MAE/RMSE/WAPE formulas, zero-denominator safety, Bias sign conventions, and January 2026 validation.
-
-### Run Frontend Tests (Vitest):
-```bash
-cd frontend
-npm run test
-```
-All 5 test suites (7 tests) verify component rendering, cutoff selection, error alerts, KPI card formatting, procurement exposure calculations, and Testing Lab scenarios.
-
----
-
-## 17. Deployment Instructions
-
-### Frontend (Vercel):
-The repository contains both root `vercel.json` and `frontend/vercel.json` configured for Vite SPA routing with automatic API rewrites.
-- Deployed at: [https://windscope-uk.vercel.app/](https://windscope-uk.vercel.app/)
-- Environment Variable: `VITE_API_BASE_URL` = `https://windscope-uk-backend.onrender.com`
-
-### Backend (Render):
-The repository includes `render.yaml` for zero-touch Render Blueprint deployments.
-- Deployed at: [https://windscope-uk-backend.onrender.com](https://windscope-uk-backend.onrender.com)
-- Free-tier note: Web services spin down after 15 minutes of inactivity; initial cold start takes ~30–50s.
-
----
-
-## 18. Environment Variable Configuration
-
-Create `.env` in `backend/` or configure in deployment platform:
-
-```ini
-# Elexon BMRS API
-ELEXON_BASE_URL=https://data.elexon.co.uk/bmrs/api/v1
-ELEXON_TIMEOUT_SECONDS=30.0
-ELEXON_MAX_RETRIES=3
-
-# Scope & Cutoffs
-TARGET_YEAR=2026
-TARGET_MONTH=1
-DEFAULT_DATE=2026-01-15
-DEFAULT_CUTOFF=day_ahead_1100
-
-# Cache & Operational Mode
-CACHE_DIR=.cache
-CACHE_TTL_SECONDS=3600
-ALLOW_DEMO_FALLBACK=true
-CORS_ORIGINS=https://windscope-uk.vercel.app,http://localhost:5173,http://localhost:3000,*
-```
-
----
-
-## 19. Known Scope Limitations
-
-1. **January 2026 Boundary:** Scoped strictly to January 2026 delivery periods per assignment guidelines.
-2. **Transmission-Connected Metering:** Datasets `FUELHH` and `WINDFOR` cover transmission-connected wind farms in Great Britain; embedded distribution-connected wind is not metered in these feeds.
-3. **Illustrative Exposure:** Energy variance figures (MWh) model aggregate wind volume deviations across GB and do not represent a utility's final net customer portfolio imbalance.
-
----
-
-## 20. AI Tool Usage Disclosure
-
-In compliance with assignment requirements:  
-AI tools, including **Google Antigravity** and **ChatGPT**, assisted with architectural design, software development, documentation, and test suite implementation of this application.
-
----
-
-## 21. How an Independent Reviewer Can Test the Application
-
-WindScope UK includes a dedicated **Interactive Testing Lab** accessible directly from the sidebar or overview header:
-
-1. Open the application: [https://windscope-uk.vercel.app/](https://windscope-uk.vercel.app/)
-2. Click **Start Testing (QA Lab)** or select **Interactive Testing Lab** in the sidebar.
-3. Click **Run All 6 Tests** to execute the live verification suite:
-   - **TEST 1 (Accuracy):** Verifies that MAE, RMSE, and WAPE are computed over complete pairs and satisfy mathematical laws ($\text{RMSE} \ge \text{MAE}$).
-   - **TEST 2 (Overforecast):** Scans for positive deviations, verifies $\text{MWh} = \text{MW} \times 0.5$, and highlights peak short risk.
-   - **TEST 3 (Underforecast):** Scans for negative deviations, verifies surplus energy conversion, and highlights peak long risk.
-   - **TEST 4 (Cutoff Validation):** Audits historical submissions to prove that 0% of selected forecasts were published after the decision cutoff.
-   - **TEST 5 (Missing Data):** Audits completeness accounting ($\text{Total} = \text{Valid} + \text{Excluded}$) and confirms $0.0\,\text{MW}$ is treated as valid generation.
-   - **TEST 6 (Data Explorer):** Verifies search, column sorting, pagination, and validates a sample CSV export blob.
-4. Expand any test card to inspect real-time calculation telemetry, formula audits, and live outcomes.
+- Electricity Act 2003, Section 73(i) (Central Electricity Authority).
+- CERC Indian Electricity Grid Code (IEGC) Regulations, 2023.
+- CERC Power Market Regulations (PMR), 2021.
+- Grid Controller of India Limited (National Load Despatch Centre Daily Operational Bulletins).
+- Open-Meteo API (Weather and ERA5 atmospheric reanalysis under CC BY 4.0).

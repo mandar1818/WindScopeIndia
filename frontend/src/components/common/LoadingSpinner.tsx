@@ -7,7 +7,7 @@ interface LoadingSpinnerProps {
 }
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
-  message = 'Loading live Elexon data...',
+  message = 'Loading renewable generation data...',
   size = 'md'
 }) => {
   const sizeClasses = {

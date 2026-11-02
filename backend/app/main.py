@@ -9,14 +9,14 @@ from app.api.v1.router import api_v1_router
 from app.api.v1.health import router as health_router
 
 app = FastAPI(
-    title="WindScope UK — Wind Power Forecasting & Day-Ahead Procurement Analytics",
+    title="WindScope India — Renewable Energy Intelligence Platform",
     description=(
-        "Engineering analytics platform for UK electricity utility trading desks. "
-        "Evaluates national wind generation forecasts from Elexon BMRS datasets FUELHH & WINDFOR, "
-        "with point-in-time forecast selection, configurable gate closure cutoffs, "
-        "WAPE/MAE/RMSE/Bias accuracy metrics, and day-ahead procurement exposure insights."
+        "Enterprise analytics platform for Indian renewable energy intelligence. "
+        "Provides multi-year (2020-2026), all-India coverage across all 28 States and 8 Union Territories "
+        "for Wind, Solar, Large Hydro, Small Hydro, and Biomass generation from official CEA and NPP sources, "
+        "with interactive choropleth mapping, 15-minute forecasting accuracy, and regional grid council analytics."
     ),
-    version="1.0.0",
+    version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_url="/openapi.json"
@@ -40,11 +40,13 @@ app.include_router(health_router)
 @app.get("/", tags=["Root"])
 async def root():
     return {
-        "service": "WindScope UK API",
-        "version": "1.0.0",
+        "service": "WindScope India — Renewable Energy Intelligence Platform",
+        "version": "2.1.0",
         "status": "operational",
         "documentation": "/docs",
-        "evaluation_scope": "January 2026",
+        "platform_scope": "Multi-Year Indian Renewable Energy (2020-2026)",
+        "jurisdiction": "28 States & 8 Union Territories",
+        "grid_timezone": "Asia/Kolkata (IST)",
         "api_v1": settings.API_V1_PREFIX,
         "timestamp_utc": datetime.now(timezone.utc).isoformat()
     }

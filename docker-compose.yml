@@ -5,19 +5,17 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: windscope_backend
+    container_name: windscope_india_backend
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
-      - ELEXON_BASE_URL=https://data.elexon.co.uk/bmrs/api/v1
-      - ELEXON_TIMEOUT_SECONDS=30.0
-      - ELEXON_MAX_RETRIES=3
-      - DEFAULT_CUTOFF=day_ahead_1100
-      - ALLOW_DEMO_FALLBACK=true
+      - DATABASE_URL=sqlite:///./windscope_india.db
+      - TIMEZONE_IST=Asia/Kolkata
+      - MARKET_TIMEZONE=Asia/Kolkata
       - DEBUG=false
     volumes:
-      - backend-cache:/app/.cache
+      - ./backend/windscope_india.db:/app/windscope_india.db
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 15s
@@ -25,13 +23,13 @@ services:
       retries: 3
       start_period: 5s
     networks:
-      - windscope-network
+      - windscope-india-network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: windscope_frontend
+    container_name: windscope_india_frontend
     restart: unless-stopped
     ports:
       - "3000:80"
@@ -39,14 +37,8 @@ services:
       backend:
         condition: service_healthy
     networks:
-      - windscope-network
-
-volumes:
-  backend-cache:
-    name: windscope_backend_cache
+      - windscope-india-network
 
 networks:
-  windscope-network:
-    name: windscope_net
-    driver: bridge
-
+  windscope-india-network:
+    name: windscope_india_net

@@ -19,6 +19,17 @@ export default defineConfig({
       }
     }
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-recharts': ['recharts'],
+          'vendor-lucide': ['lucide-react'],
+        }
+      }
+    }
+  },
   test: {
     globals: true,
     environment: 'jsdom',

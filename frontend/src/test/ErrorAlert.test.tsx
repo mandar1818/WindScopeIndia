@@ -9,13 +9,13 @@ describe('ErrorAlert Component', () => {
     render(
       <ErrorAlert
         title="Network Timeout"
-        message="Failed to connect to Elexon BMRS endpoint"
+        message="Failed to connect to CEA generation endpoint"
         onRetry={handleRetry}
       />
     );
 
     expect(screen.getByText('Network Timeout')).toBeInTheDocument();
-    expect(screen.getByText('Failed to connect to Elexon BMRS endpoint')).toBeInTheDocument();
+    expect(screen.getByText('Failed to connect to CEA generation endpoint')).toBeInTheDocument();
 
     const retryBtn = screen.getByText('Retry Request');
     fireEvent.click(retryBtn);
