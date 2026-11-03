@@ -71,9 +71,12 @@ export interface IndiaStateItem {
   latitude: number;
   longitude: number;
   total_capacity_mw: number;
+  total_re_capacity_mw?: number;
   wind_capacity_mw: number;
   solar_capacity_mw: number;
+  hydro_capacity_mw?: number;
   has_wind: boolean;
+  has_commercial_wind?: boolean;
 }
 
 export interface MonthlySeriesItem {

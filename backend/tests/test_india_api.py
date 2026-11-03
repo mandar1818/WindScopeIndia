@@ -38,6 +38,27 @@ def test_india_states_directory_and_filter():
     all_states = res_all.json()
     assert len(all_states) == 36
 
+    # Verify 28 States and 8 Union Territories
+    states = [s for s in all_states if s["entity_type"] == "STATE"]
+    uts = [s for s in all_states if s["entity_type"] == "UNION_TERRITORY"]
+    assert len(states) == 28
+    assert len(uts) == 8
+
+    # Schema integrity check
+    for item in all_states:
+        assert "code" in item
+        assert "name" in item
+        assert "entity_type" in item
+        assert "region_code" in item
+        assert "capital" in item
+        assert "total_capacity_mw" in item
+        assert "total_re_capacity_mw" in item
+        assert "wind_capacity_mw" in item
+        assert "solar_capacity_mw" in item
+        assert "has_wind" in item
+        assert isinstance(item["has_wind"], bool)
+        assert item["total_capacity_mw"] >= 0.0
+
     # Only wind states
     res_wind = client.get("/api/v1/india/states?has_wind=true")
     assert res_wind.status_code == 200

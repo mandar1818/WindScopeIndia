@@ -66,16 +66,17 @@ export const StateExplorerPage: React.FC = () => {
 
   const filteredStates = states.filter((st) => {
     const matchesSearch =
-      st.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      st.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      st.capital.toLowerCase().includes(searchQuery.toLowerCase());
+      (st.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (st.code || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (st.capital || '').toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesRegion = selectedRegion === 'ALL' || st.region_code === selectedRegion;
     const matchesType = typeFilter === 'ALL' || st.entity_type === typeFilter;
+    const hasWind = Boolean(st.has_wind ?? st.has_commercial_wind ?? ((st.wind_capacity_mw ?? 0) > 0));
     const matchesWind =
       windFilter === 'ALL' ||
-      (windFilter === 'WIND_ONLY' && st.has_wind) ||
-      (windFilter === 'NON_WIND' && !st.has_wind);
+      (windFilter === 'WIND_ONLY' && hasWind) ||
+      (windFilter === 'NON_WIND' && !hasWind);
 
     return matchesSearch && matchesRegion && matchesType && matchesWind;
   });
@@ -160,6 +161,9 @@ export const StateExplorerPage: React.FC = () => {
           ) : (
             filteredStates.map((st) => {
               const isSelected = activeStateCode === st.code;
+              const hasWind = Boolean(st.has_wind ?? st.has_commercial_wind ?? ((st.wind_capacity_mw ?? 0) > 0));
+              const totalCap = st.total_capacity_mw ?? st.total_re_capacity_mw ?? 0;
+              const windCap = st.wind_capacity_mw ?? 0;
               return (
                 <div
                   key={st.code}
@@ -185,12 +189,12 @@ export const StateExplorerPage: React.FC = () => {
                   <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] font-mono border-t border-nature-border/60 pt-2">
                     <div>
                       <span className="text-[10px] text-nature-muted block font-sans">Total Capacity</span>
-                      <strong className="text-nature-text">{st.total_capacity_mw.toLocaleString()} MW</strong>
+                      <strong className="text-nature-text">{totalCap.toLocaleString()} MW</strong>
                     </div>
                     <div>
                       <span className="text-[10px] text-nature-muted block font-sans">Wind Fleet</span>
-                      <strong className={st.has_wind ? 'text-nature-actual' : 'text-nature-muted'}>
-                        {st.has_wind ? `${st.wind_capacity_mw.toLocaleString()} MW` : '0.0 MW'}
+                      <strong className={hasWind ? 'text-nature-actual' : 'text-nature-muted'}>
+                        {hasWind ? `${windCap.toLocaleString()} MW` : '0.0 MW'}
                       </strong>
                     </div>
                   </div>
@@ -202,13 +206,19 @@ export const StateExplorerPage: React.FC = () => {
 
         {/* Right Active State Deep Dive Profile */}
         <div className="space-y-3">
-          {stateProfile ? (
+          {profileLoading ? (
+            <div className="rounded-lg border border-nature-border bg-white p-4 shadow-sm space-y-3">
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-32 w-full" />
+              <Skeleton className="h-40 w-full" />
+            </div>
+          ) : stateProfile ? (
             <div className="rounded-lg border border-nature-border bg-white p-4 shadow-sm space-y-3 sticky top-4">
               <div className="flex items-center justify-between pb-2 border-b border-nature-border">
                 <div>
                   <h3 className="text-sm font-semibold text-nature-text">{stateProfile.name}</h3>
                   <span className="text-[10px] text-nature-muted font-mono">
-                    {stateProfile.entity_type} &bull; {stateProfile.region_code} Grid &bull; Lat {stateProfile.latitude.toFixed(2)}&deg;
+                    {stateProfile.entity_type} &bull; {stateProfile.region_code} Grid &bull; Lat {stateProfile.latitude?.toFixed(2)}&deg;
                   </span>
                 </div>
                 <span className="px-2 py-0.5 rounded bg-emerald-50 text-nature-forest text-xs font-mono font-semibold border border-emerald-200">
@@ -220,14 +230,17 @@ export const StateExplorerPage: React.FC = () => {
               <div className="space-y-1.5">
                 <span className="text-xs font-semibold text-nature-text block">Installed Capacity Mix (MW):</span>
                 <div className="grid grid-cols-2 gap-1.5 text-xs font-mono">
-                  {Object.entries(stateProfile.capacity_breakdown).map(([src, mw]) => (
-                    <div key={src} className="p-2 rounded bg-nature-bg border border-nature-border">
-                      <span className="text-[10px] text-nature-muted block truncate font-sans">
-                        {src.replace('_', ' ')}
-                      </span>
-                      <span className="font-semibold text-nature-text tabular-nums">{mw.toLocaleString()} MW</span>
-                    </div>
-                  ))}
+                  {stateProfile.capacity_breakdown &&
+                    Object.entries(stateProfile.capacity_breakdown).map(([src, mw]) => (
+                      <div key={src} className="p-2 rounded bg-nature-bg border border-nature-border">
+                        <span className="text-[10px] text-nature-muted block truncate font-sans">
+                          {src.replace('_', ' ')}
+                        </span>
+                        <span className="font-semibold text-nature-text tabular-nums">
+                          {(mw ?? 0).toLocaleString()} MW
+                        </span>
+                      </div>
+                    ))}
                 </div>
               </div>
 
@@ -238,7 +251,7 @@ export const StateExplorerPage: React.FC = () => {
                 </span>
                 <div className="h-40">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={stateProfile.seasonality} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                    <LineChart data={stateProfile.seasonality || []} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                       <XAxis dataKey="month_name" tick={{ fontSize: 10, fill: '#748078' }} />
                       <YAxis tick={{ fontSize: 10, fill: '#748078' }} />
                       <Tooltip

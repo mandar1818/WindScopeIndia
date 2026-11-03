@@ -18,4 +18,4 @@ services:
       - key: MARKET_TIMEZONE
         value: Asia/Kolkata
       - key: CORS_ORIGINS
-        value: "https://windscope-india.vercel.app,http://localhost:5173,http://localhost:3000,*"
+        value: "https://windscopeindia.vercel.app,https://windscope-india.vercel.app,http://localhost:5173,http://localhost:3000,*"

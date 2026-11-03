@@ -21,7 +21,7 @@ const getApiBaseUrl = (): string => {
     return import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
   }
   if (import.meta.env.PROD) {
-    return 'https://windscope-india-backend.onrender.com';
+    return 'https://windscopeindia.onrender.com';
   }
   return '';
 };

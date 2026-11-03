@@ -520,7 +520,9 @@ class IndiaAnalyticsService:
                 "wind_capacity_mw": round(wind_cap, 1),
                 "solar_capacity_mw": round(solar_cap, 1),
                 "hydro_capacity_mw": round(hydro_cap, 1),
+                "total_capacity_mw": round(total_re_cap, 1),
                 "total_re_capacity_mw": round(total_re_cap, 1),
+                "has_wind": wind_cap > 0.0,
                 "has_commercial_wind": wind_cap > 50.0,
             })
 
