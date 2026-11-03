@@ -3,7 +3,7 @@
 
 **Document Version:** 1.0.0  
 **Project:** WindScope India — Renewable Energy Intelligence Platform  
-**Target Repository:** `D:\WindScopeUK`  
+**Target Repository:** `D:\WindScopeIndia`  
 **Execution Date:** 01 November 2026  
 **Auditor / Architecture Role:** Lead DevOps & Cloud Infrastructure Engineer  
 
@@ -159,5 +159,5 @@ Expected Response: `401` Unauthorized.
 - [x] Automated database backups enabled on Render (daily snapshots retained).
 - [x] Ingestion admin key stored exclusively in cloud environment variables.
 - [x] Database connection pooling configured with automatic 30-minute recycling.
-- [x] Preserved WindScope UK benchmark verified functioning alongside India views.
+- [x] Dedicated 14 India frontend modules verified functioning.
 

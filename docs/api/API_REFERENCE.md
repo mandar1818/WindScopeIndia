@@ -1,11 +1,11 @@
 # WindScope India — API Reference Specification
-## Comprehensive OpenAPI REST Reference for WindScope India & Preserved WindScope UK Benchmark
+## Comprehensive OpenAPI REST Reference for WindScope India Platform
 
-**Document Version:** 1.0.0  
+**Document Version:** 2.0.0  
 **Project:** WindScope India — Renewable Energy Intelligence Platform  
-**Target Repository:** `D:\WindScopeUK`  
-**Execution Date:** 01 November 2026  
-**Auditor / Architecture Role:** Lead API Architect & Backend Systems Engineer  
+**Target Repository:** `D:\WindScopeIndia`  
+**Execution Date:** 03 November 2026  
+**Architecture Role:** Lead API Architect & Backend Systems Engineer  
 
 ---
 
@@ -289,17 +289,4 @@ WindScope India provides a high-throughput, OpenAPI 3.0-compliant RESTful API bu
 ### 3.19 `GET /api/v1/india/export/csv`
 **Description:** Exports filtered generation outturns as a standardized UTF-8 CSV stream.
 
----
-
-## 4. Preserved WindScope UK Benchmark Endpoints
-
-| Endpoint | Method | Evaluation Scope | Description |
-| :--- | :--- | :--- | :--- |
-| `/` | `GET` | Root | Root API metadata and service status. |
-| `/health` | `GET` | All | Container health check and live Elexon API reachability probe. |
-| `/api/v1/overview` | `GET` | January 2026 | Day-ahead wind forecast vs actual generation for 48 settlement periods. |
-| `/api/v1/generation` | `GET` | January 2026 | Detailed half-hourly generation records from Elexon BMRS `FUELHH`. |
-| `/api/v1/accuracy` | `GET` | January 2026 | MAE, RMSE, WAPE, and Bias evaluation across cutoff horizons. |
-| `/api/v1/forecast-history`| `GET` | January 2026 | Waterfall progression of wind forecasts published prior to delivery. |
-| `/api/v1/data-status` | `GET` | January 2026 | Upstream Elexon connection status and active cache metadata. |
 

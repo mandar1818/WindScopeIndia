@@ -2,7 +2,7 @@
 
 **Document Reference:** `WINDSCOPE_INDIA_MARKET_RULES_AUDIT.md`  
 **Date:** November 1, 2026  
-**Statutory Authorities:** Central Electricity Regulatory Commission (CERC) / Grid Controller of India Limited / Elexon (UK)  
+**Statutory Authorities:** Central Electricity Regulatory Commission (CERC) / Grid Controller of India Limited  
 **Primary Working Directory:** `D:\WindScopeIndia`  
 
 ---

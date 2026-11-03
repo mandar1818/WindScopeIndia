@@ -3,7 +3,7 @@
 
 **Document Version:** 1.0.0  
 **Project:** WindScope India — Renewable Energy Intelligence Platform  
-**Target Repository:** `D:\WindScopeUK`  
+**Target Repository:** `D:\WindScopeIndia`  
 **Execution Date:** 01 November 2026  
 **Auditor / Architecture Role:** Lead PostgreSQL Architect, DevOps Systems Engineer  
 

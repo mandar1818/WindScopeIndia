@@ -31,7 +31,7 @@ WindScope India is architected as a decoupled, cloud-native full-stack platform:
 │             Render Web Service Container               │
 │  FastAPI (Python 3.12) + Uvicorn ASGI Server          │
 │  - Endpoint Router: /api/v1/india/*                    │
-│  - Preserved Benchmark: /api/v1/* (UK Elexon)          │
+│  - API Gateway: /api/v1/india/* & /health             │
 │  - Ingestion Engine & Schedulers                       │
 └────────────────────────────────────────────────────────┘
             │

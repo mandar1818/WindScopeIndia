@@ -5,44 +5,87 @@ __pycache__/
 *.so
 .Python
 backend/.venv/
+.venv/
 venv/
 ENV/
+env/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .coverage
 htmlcov/
 .cache/
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Databases & Backups (Preserve in workspace, exclude from VCS)
 *.db
 *.sqlite*
 *.bak*
+*.db-journal
+*.db-wal
+*.db-shm
 
 # Node & Frontend
 node_modules/
 frontend/node_modules/
 frontend/dist/
 dist/
+dist-ssr/
 .vite/
 *.tsbuildinfo
+coverage/
+.eslintcache
 
 # Environment variables & local secrets
 .env
 .env.local
 .env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Logs
 *.log
+logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # OS & IDE
 .DS_Store
 Thumbs.db
-.vscode/
+ehthumbs.db
+Desktop.ini
 .idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Preserve shared team VS Code configs if added
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 # Scratch & Temporary Downloads
 scratch_downloads/
 backend/data/temp_downloads/
 backend/data/validation_reports/
-
-
