@@ -30,13 +30,16 @@ wheels/
 .installed.cfg
 *.egg
 
-# Databases & Backups (Preserve in workspace, exclude from VCS)
+# Databases & Backups (Preserve local backups, exclude from VCS)
 *.db
 *.sqlite*
 *.bak*
 *.db-journal
 *.db-wal
 *.db-shm
+
+# Include canonical pre-seeded production SQLite database for repository & cloud deployment
+!backend/windscope_india.db
 
 # Node & Frontend
 node_modules/

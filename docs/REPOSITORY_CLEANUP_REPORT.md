@@ -167,7 +167,9 @@ Build Output: Clean production bundles generated in frontend/dist/
 
 ## 8. Git Commit & Push Summary
 
-- **Staged Changes:** Documentation reorganization (`docs/`), improved `.gitignore`, rewritten `README.md`, new `frontend/README.md`, `backend/README.md`, `CONTRIBUTING.md`, `LICENSE`, `.github/` workflows and issue templates.
-- **Excluded Items:** No `.db`, `.bak*`, `.env`, `node_modules`, `.cache`, or `.venv` files staged.
-- **Commit Message:** `docs: professionalize WindScope India repository and clean project structure`
+- **Staged Changes:** Canonical pre-seeded database (`backend/windscope_india.db`), documentation reorganization (`docs/`), improved `.gitignore`, rewritten `README.md`, new `frontend/README.md`, `backend/README.md`, `CONTRIBUTING.md`, `LICENSE`, `.github/` workflows and issue templates.
+- **Tracked SQLite Database:** `backend/windscope_india.db` (10.8 MB) is tracked in the repository to guarantee immediate out-of-the-box local execution and seamless Render container deployment without requiring external database provisioning.
+- **Excluded Items:** Ephemeral backup databases (`*.bak*`, `*.db-journal`, `*.db-wal`), `.env*` secret files, `node_modules/`, `.cache/`, and `.venv/` remain strictly excluded.
+- **Commit Message:** `feat: include pre-seeded SQLite database for zero-config deployment`
 - **Target Branch:** `main`
+
